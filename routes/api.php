@@ -2,7 +2,8 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\PlatformController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -16,4 +17,21 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
+});
+
+
+Route::post('/register', [AuthController::class, 'register']);
+Route::post('/login', [AuthController::class, 'login']);
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::post('/logout', [AuthController::class, 'apiLogout']);
+    Route::get('/user', function (Request $request) {
+        return $request->user();
+    });
+
+    Route::apiResource('posts', \App\Http\Controllers\Api\PostController::class);
+
+    // Platform management
+    Route::get('/platforms', [PlatformController::class, 'index']);
+    Route::post('/platforms/toggle', [PlatformController::class, 'toggle']);
 });
